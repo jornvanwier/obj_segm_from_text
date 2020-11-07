@@ -931,5 +931,5 @@ def resnet50(num_classes, pretrained=False, **kwargs):
     model = ResNet(num_classes, Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(
-            model_urls['resnet50'], model_dir='.'), strict=False)
+            model_urls['resnet50'], model_dir=''), strict=False)
     return model

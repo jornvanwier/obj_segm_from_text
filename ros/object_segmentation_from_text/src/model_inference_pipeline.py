@@ -41,8 +41,8 @@ if torch.cuda.is_available():
 # ros params??
 resize_image = 300
 phrase_len = 50
-cfg_path = '/home/ggtz/vis_gr_ws/src/object_segmentation_from_text/configs/cfg.json'
-model_path = '/home/ggtz/vis_gr_ws/src/object_segmentation_from_text/checkpoints/zsgnet_flickr30k_best.pth'
+cfg_path = '/ros_ws/object_segmentation_from_text/configs/cfg.json'
+model_path = '/ros_ws/object_segmentation_from_text/models/zsgnet_flickr30k_best.pth'
 
 # collate function for pushing tensor objects into batches 
 def collate_fn(batch):
@@ -99,8 +99,8 @@ class ModelInferencePipeline():
     self.caption = ' PD' # PAD value given temporarily
     self.img, self.caption_embdds, self.caption_len = None, None, None # NULL init
     self.caption_sub = rospy.Subscriber("/caption_buffer_from_console/caption", String, self.got_caption)
-    #self.rgb_sub = rospy.Subscriber("/image_buffer_from_path/RGB", Image, self.got_img)
-    self.rgb_sub = rospy.Subscriber("/camera/rgb/image_rect_color", Image, self.got_img)
+    self.rgb_sub = rospy.Subscriber("/image_buffer_from_path/RGB", Image, self.got_img)
+    # self.rgb_sub = rospy.Subscriber("/camera/rgb/image_rect_color", Image, self.got_img)
 
   def load_network(self):
 

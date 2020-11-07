@@ -11,7 +11,7 @@ def caption_buffer():
   pub = rospy.Publisher('/caption_buffer_from_console/caption', String, queue_size=10)
   rospy.init_node('caption_buffer_from_console', anonymous=True)
   rate = rospy.Rate(60)
-  handle = raw_input('waiting for caption!: ')
+  handle = input('waiting for caption!: ')
   while not rospy.is_shutdown():
     log_str = 'buffering caption from console %s' % rospy.get_time()
     rospy.loginfo(log_str)

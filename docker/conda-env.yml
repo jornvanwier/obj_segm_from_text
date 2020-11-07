@@ -1,0 +1,11 @@
+name: vilbert-mt
+channels:
+  - pytorch
+dependencies:
+  - python=3.6
+  - pip
+  - pytorch 
+  - torchvision 
+  - cudatoolkit=10.0
+  - pip:
+    - -r file:requirements.txt 
