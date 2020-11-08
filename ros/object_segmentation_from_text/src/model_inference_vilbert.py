@@ -21,7 +21,8 @@ class InferenceNode:
         rospy.init_node('model_inference_vilbert', anonymous=True)
         self.rgb_pub = rospy.Publisher('/object_segmentation_from_text/RGB_with_box', ROSImage, queue_size=10)
         self.caption_sub = rospy.Subscriber("/caption_buffer_from_console/caption", String, self.handle_caption)
-        self.rgb_sub = rospy.Subscriber("/image_buffer_from_path/RGB", ROSImage, self.handle_image)
+        self.rgb_sub_static = rospy.Subscriber("/image_buffer_from_path/RGB", ROSImage, self.handle_image)
+        self.rgb_sub_camera = rospy.Subscriber("/camera/rgb/image_rect_color", ROSImage, self.handle_image)
 
         self.img_msg = None
         self.query = None
@@ -44,6 +45,12 @@ class InferenceNode:
         pil_img = PILImage.fromarray(cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB))
 
         bbox = self.vilbert_model.evaluate(pil_img, self.query)
+
+        if bbox is None:
+            failed_img = cv2.putText(cv2_image, f'"{self.query}" not found', (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+                                     (0, 0, 0xFF), thickness=2)
+            self.publish_image(failed_img.tobytes())
+            return
 
         image = draw_box(cv2_image, self.query, bbox)
 
