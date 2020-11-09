@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import time
 
 import cv2
 import numpy as np
@@ -34,25 +35,35 @@ class InferenceNode:
 
     def handle_image(self, img_msg: ROSImage):
         self.img_msg = img_msg
+        start = time.perf_counter()
         self.inference(img_msg)
+        print(f'Evaluated in {round(time.perf_counter() -  start, 2)}s')
 
     def inference(self, img: ROSImage):
-        if not self.query:
+        query = self.query
+
+        if not query:
             return
 
         h, w = img.height, img.width
+
         cv2_image = np.frombuffer(img.data, dtype=np.uint8).reshape(h, w, -1)
+        # cv2_image = cv2.resize(cv2_image, (IMAGE_SIZE, IMAGE_SIZE))
+
         pil_img = PILImage.fromarray(cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB))
 
-        bbox = self.vilbert_model.evaluate(pil_img, self.query)
+        bbox = self.vilbert_model.evaluate(pil_img, query)
 
         if bbox is None:
-            failed_img = cv2.putText(cv2_image, f'"{self.query}" not found', (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+            failed_img = cv2.putText(cv2_image, f'"{query}" not found', (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0,
                                      (0, 0, 0xFF), thickness=2)
             self.publish_image(failed_img.tobytes())
             return
 
-        image = draw_box(cv2_image, self.query, bbox)
+        image = draw_box(cv2_image, query, bbox)
+
+        # Save image
+        cv2.imwrite(f'result/{query}.jpg', image)
 
         self.publish_image(image.tobytes())
 

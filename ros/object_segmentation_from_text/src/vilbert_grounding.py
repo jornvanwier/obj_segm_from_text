@@ -69,8 +69,8 @@ class VILBertGrounding:
         confidence = grounding_val[output_idx].item()
         print('Confidence:', confidence)
 
-        if confidence < 1.:
-            return None
+        # if confidence < .5:
+        #     return None
 
         idx = grounding_idx[output_idx]
         box = spatials[0][idx][:4].tolist()

@@ -16,9 +16,9 @@ echo "Waiting for ROS core to start..."
 sleep 1
 
 #rosrun object_segmentation_from_text model_inference_pipeline.py &
-rosrun object_segmentation_from_text model_inference_vilbert.py &
+#rosrun object_segmentation_from_text model_inference_vilbert.py &
 
-rosrun object_segmentation_from_text image_buffer_from_path.py /ros_ws/object_segmentation_from_text/data/boy.jpg > /dev/null &
+#rosrun object_segmentation_from_text image_buffer_from_path.py /ros_ws/object_segmentation_from_text/data/boy.jpg > /dev/null &
 
 rosrun rviz rviz -d /ros_ws/rviz-cfg.rviz &
 
@@ -26,4 +26,4 @@ rosrun rviz rviz -d /ros_ws/rviz-cfg.rviz &
 
 
 cd /ros_ws || return
-terminator -u
+terminator -ux bash -c "rosrun object_segmentation_from_text caption_buffer_from_console.py"
